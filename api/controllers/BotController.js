@@ -10,7 +10,7 @@ var sendAPI = require('../utils/sendAPI');
 module.exports = {
   subscribe: function (req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === sails.config.parameters.validationToken) {
+      req.query['hub.verify_token'] === sails.config.parameters.validationToken) {
       sails.log.info("Validating webhook");
       res.ok(req.query['hub.challenge']);
     } else {
@@ -27,6 +27,19 @@ module.exports = {
           if (err)
             sails.log.error(err);
           sails.log.info(user);
+          if (message.message.text)
+            Message.create({
+              sender: user,
+              entry: entry.id,
+              message: message.message.text
+            }).exec(function (err, message) {
+              if (err)
+                sails.log.error(err);
+              sails.log.info(message);
+            });
+            /*********************************
+             * Implement your bot logic here *
+             *********************************/
           sendAPI.typingOff(message.sender.id);
         });
       });
@@ -51,17 +64,17 @@ getUser = function (sender, cb) {
   if (!sender)
     cb('can not find sender', null);
   User.findOne({fbId: sender.id})
-      .exec(function (err, user) {
-        if (err)
-          cb(err, null);
-        if (!user) {
-          User.createFromFb(sender.id, function (err, user) {
-            if(!err)
-              sendAPI.welcome(sender.id);
-            cb(err, user);
-          });
-        } else {
-          cb(null, user);
-        }
-      });
+    .exec(function (err, user) {
+      if (err)
+        cb(err, null);
+      if (!user) {
+        User.createFromFb(sender.id, function (err, user) {
+          if (!err)
+            sendAPI.welcome(sender.id);
+          cb(err, user);
+        });
+      } else {
+        cb(null, user);
+      }
+    });
 };

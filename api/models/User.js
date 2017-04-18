@@ -44,17 +44,6 @@ module.exports = {
     messages: {
       collection: 'message',
       via: 'sender'
-    },
-    played: {
-      type: 'array',
-      defaultTo: []
-    },
-    current: {
-      model: 'riddle'
-    },
-    tries: {
-      type: 'integer',
-      defaultTo: 0
     }
   },
   createFromFb: function (id, cb) {

@@ -1,8 +1,8 @@
 {
-  "name": "vriddles",
-  "private": true,
+  "name": "messenger-bot-sails",
+  "private": false,
   "version": "0.0.0",
-  "description": "a Sails application",
+  "description": "boilerplate for facebook messenger bots on sails",
   "keywords": [],
   "dependencies": {
     "ejs": "2.3.4",
@@ -31,8 +31,8 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bechir/vriddles.git"
+    "url": "git://github.com/Freeways/messenger-bot-sails.git"
   },
   "author": "bechir",
-  "license": ""
+  "license": "GPL2"
 }
