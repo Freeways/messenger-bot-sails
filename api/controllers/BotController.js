@@ -10,7 +10,7 @@ var sendAPI = require('../utils/sendAPI');
 module.exports = {
   subscribe: function (req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-      req.query['hub.verify_token'] === sails.config.parameters.validationToken) {
+        req.query['hub.verify_token'] === sails.config.parameters.validationToken) {
       sails.log.info("Validating webhook");
       res.ok(req.query['hub.challenge']);
     } else {
@@ -22,25 +22,23 @@ module.exports = {
     var data = req.allParams();
     data.entry.forEach(function (entry) {
       entry.messaging.forEach(function (message) {
-        sendAPI.typingOn(message.sender.id);
+        sendAPI.typingOn(message.sender.id, function(m){return;});
         getUser(message.sender, function (err, user) {
           if (err)
             sails.log.error(err);
-          sails.log.info(user);
-          if (message.message.text)
+          if (message.message)
             Message.create({
               sender: user,
               entry: entry.id,
-              message: message.message.text
+              message: message.message.text,
+              attachement: message.message.attachement
             }).exec(function (err, message) {
               if (err)
                 sails.log.error(err);
-              sails.log.info(message);
             });
-            /*********************************
-             * Implement your bot logic here *
-             *********************************/
-          sendAPI.typingOff(message.sender.id);
+          /*********************************
+           * Implement your bot logic here *
+           *********************************/
         });
       });
     });
@@ -64,17 +62,20 @@ getUser = function (sender, cb) {
   if (!sender)
     cb('can not find sender', null);
   User.findOne({fbId: sender.id})
-    .exec(function (err, user) {
-      if (err)
-        cb(err, null);
-      if (!user) {
-        User.createFromFb(sender.id, function (err, user) {
-          if (!err)
-            sendAPI.welcome(sender.id);
-          cb(err, user);
-        });
-      } else {
-        cb(null, user);
-      }
-    });
+      .exec(function (err, user) {
+        if (err)
+          cb(err, null);
+        if (!user) {
+          User.createFromFb(sender.id, function (err, user) {
+            if (!err)
+              sendAPI.welcome(user, function (message) {
+                sendAPI.typingOff(user, function (message) {
+                  cb(err, user);
+                });
+              });
+          });
+        } else {
+          cb(null, user);
+        }
+      });
 };

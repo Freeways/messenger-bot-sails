@@ -1,7 +1,7 @@
 var https = require('https');
 
 module.exports = {
-  send: function (messageData) {
+  send: function (messageData, cb) {
     messageData.access_token = sails.config.parameters.pageAccessToken;
     var data = JSON.stringify(messageData);
     var options = {
@@ -22,11 +22,12 @@ module.exports = {
         body += chunk;
       });
       res.on('end', function () {
-        console.log(body)
         var message = JSON.parse(body);
-        if (message.message_id)
-          return sails.log.info("Message " + message.message_id + " sent to " + message.recipient_id);
-        sails.log.info("API Call for " + message.recipient_id);
+        if (!message)
+          return cb('error while parsing json response, response was : ' + body, null);
+        if (message.error)
+          return cb(message, null);
+        return cb(null, message);
       });
     });
     req.on('error', function (err) {
@@ -35,44 +36,44 @@ module.exports = {
     req.write(data);
     req.end();
   },
-  typingOn: function (recipientId) {
+  typingOn: function (recipientId, done) {
     var messageData = {
       recipient: {
         id: recipientId
       },
       sender_action: "typing_on"
     };
-    this.send(messageData);
+    this.send(messageData, done);
   },
-  typingOff: function (recipientId) {
+  typingOff: function (user, done) {
     var messageData = {
       recipient: {
-        id: recipientId
+        id: user.fbId
       },
       sender_action: "typing_off"
     };
-    this.send(messageData);
+    this.send(messageData, done);
   },
-  welcome: function (recipientId) {
+  welcome: function (user, done) {
     var messageData = {
       recipient: {
-        id: recipientId
+        id: user.fbId
       },
       message: {
         attachment: {
           type: "template",
           payload: {
             template_type: "button",
-            text: "Hello, and welcome to vRiddles!",
+            text: "Hello, and welcome",
             buttons: [{
                 type: "postback",
-                title: "Start Solving!",
-                payload: "DEVELOPER_DEFINED_PAYLOAD"
+                title: "Start",
+                payload: "start"
               }]
           }
         }
       }
     };
-    this.send(messageData);
+    this.send(messageData, done);
   }
 }

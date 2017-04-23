@@ -37,10 +37,6 @@ module.exports = {
     gender: {
       type: "string"
     },
-    score: {
-      type: 'integer',
-      defaultTo: 0
-    },
     messages: {
       collection: 'message',
       via: 'sender'

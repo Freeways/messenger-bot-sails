@@ -16,8 +16,10 @@ module.exports = {
       required: true
     },
     message: {
-      type: "string",
-      required: true
+      type: "string"
+    },
+    attachemend: {
+      type: "string"
     }
   }
 };

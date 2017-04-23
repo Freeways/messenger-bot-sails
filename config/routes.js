@@ -44,6 +44,12 @@ module.exports.routes = {
   'get /authorize': {
     controller: 'BotController',
     action: 'authorize'
+  },
+  'get /policy': {
+    view: 'policy'
+  },
+  'get /terms': {
+    view: 'terms'
   }
 
   /***************************************************************************
