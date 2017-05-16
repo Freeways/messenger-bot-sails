@@ -47,6 +47,7 @@ module.exports = {
   authorize: function (req, res) {
     var accountLinkingToken = req.query.account_linking_token;
     var redirectURI = req.query.redirect_uri;
+    // authCode must be a generated unique string
     var authCode = "1234567890";
     var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 

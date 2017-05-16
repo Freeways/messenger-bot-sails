@@ -5,7 +5,9 @@
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
  */
 
-var languages = require('../utils/languages');
+var languages = require('../utils/languages').map(function(lang){
+  return lang.fb;
+});
 
 module.exports = {
   attributes: {

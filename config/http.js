@@ -104,7 +104,7 @@ function verifyRequestSignature(req, res, buf) {
     var signatureHash = elements[1];
 
     var expectedHash = crypto.createHmac('sha1', sails.config.parameters.appSecret)
-        .update(req.allParams())
+        .update(buf)
         .digest('hex');
 
     if (signatureHash !== expectedHash)

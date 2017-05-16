@@ -18,7 +18,7 @@ module.exports = {
 
   models: {
     schema: true,
-    connection: 'sails-disk',
+    connection: 'devMongodb',
     migrate: 'alter'
   }
 

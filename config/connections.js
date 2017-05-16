@@ -28,6 +28,12 @@ module.exports.connections = {
   * Installed by default.                                                    *
   *                                                                          *
   ***************************************************************************/
+ devMongodb: {
+    adapter: 'sails-mongo',
+    host: 'localhost',
+    port: 27017,
+    database: 'sails_bot_db'
+  },
   localDiskDb: {
     adapter: 'sails-disk'
   },
