@@ -10,7 +10,7 @@ var sendAPI = require('../utils/sendAPI');
 module.exports = {
   subscribe: function (req, res) {
     if (req.query['hub.mode'] === 'subscribe' &&
-        req.query['hub.verify_token'] === sails.config.parameters.validationToken) {
+      req.query['hub.verify_token'] === sails.config.parameters.validationToken) {
       sails.log.info("Validating webhook");
       res.ok(req.query['hub.challenge']);
     } else {
@@ -21,24 +21,91 @@ module.exports = {
   handleMessage: function (req, res) {
     var data = req.allParams();
     data.entry.forEach(function (entry) {
-      entry.messaging.forEach(function (message) {
-        sendAPI.typingOn(message.sender.id, function(m){return;});
-        getUser(message.sender, function (err, user) {
+      entry.messaging.forEach(function (recievedMessage) {
+        //Uncomment to display the famous typing 3 dots to the user until your bot reply
+        //sendAPI.typingOn(message.sender.id, function (m) {
+        //  return;
+        //});
+        getUser(recievedMessage.sender, function (err, user) {
           if (err)
             sails.log.error(err);
-          if (message.message)
+          if (recievedMessage.message) {
+            // Comment the create function if you do not want to save messages
             Message.create({
               sender: user,
               entry: entry.id,
-              message: message.message.text,
-              attachement: message.message.attachement
+              message: recievedMessage.message.text,
+              attachement: recievedMessage.message.attachement
             }).exec(function (err, message) {
               if (err)
                 sails.log.error(err);
+              /*
+               * Implement your message recieved bot logic here
+               * The message is either a text or an attachement
+               * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received 
+               */
             });
-          /*********************************
-           * Implement your bot logic here *
-           *********************************/
+          } else if(message.postback) {
+            /*
+             * Postback Event
+             *
+             * This event is called when a postback is tapped on a Structured Message. 
+             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
+             * 
+             */
+            
+            /* 
+             * Create a response object
+             * https://developers.facebook.com/docs/messenger-platform/send-api-reference
+             */
+            var responseMessage = {};
+            return sendAPI.send(responseMessage, function(err, botResponse){
+              if (err)
+                sails.log.error(err);
+              /*
+               * Anything put here executes after sending the response.
+               * The sent response is on the botResponse Object
+               */
+            });
+          } else if(message.optin) {
+            /*
+             * Authorization Event
+             *
+             * The value for 'message.optin.ref' is defined in the entry point.
+             * For the "Send to Messenger" plugin, it is the 'data-ref' field. 
+             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
+             *
+             */
+            return;
+          } else if(message.delivery) {
+            /*
+             * Delivery Confirmation Event
+             *
+             * This event is sent to confirm the delivery of a message.
+             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
+             *
+             */
+            return;
+          } else if(message.read) {
+            /*
+             * Message Read Event
+             *
+             * This event is called when a previously-sent message has been read.
+             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
+             * 
+             */
+            return;
+          } else if(message.account_linking) {
+            /*
+             * Account Link Event
+             *
+             * This event is called when the Link Account or UnLink Account action has been tapped.
+             * https://developers.facebook.com/docs/messenger-platform/webhook-reference/account-linking
+             * 
+             */
+            return;
+          } else
+            sails.log.error("unknow message type recieved: " + message);
         });
       });
     });
@@ -63,20 +130,20 @@ getUser = function (sender, cb) {
   if (!sender)
     cb('can not find sender', null);
   User.findOne({fbId: sender.id})
-      .exec(function (err, user) {
-        if (err)
-          cb(err, null);
-        if (!user) {
-          User.createFromFb(sender.id, function (err, user) {
-            if (!err)
-              sendAPI.welcome(user, function (message) {
-                sendAPI.typingOff(user, function (message) {
-                  cb(err, user);
-                });
+    .exec(function (err, user) {
+      if (err)
+        cb(err, null);
+      if (!user) {
+        User.createFromFb(sender.id, function (err, user) {
+          if (!err)
+            sendAPI.welcome(user, function (message) {
+              sendAPI.typingOff(user, function (message) {
+                cb(err, user);
               });
-          });
-        } else {
-          cb(null, user);
-        }
-      });
+            });
+        });
+      } else {
+        cb(null, user);
+      }
+    });
 };
