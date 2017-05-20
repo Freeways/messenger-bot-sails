@@ -20,20 +20,20 @@ npm install
 
 Create your page and bot on [developers.facebook.com](https://developers.facebook.com/docs/messenger-platform/guides/quick-start)
 
-Edit your (config/parameters.js)[config/parameters.js] with the values you've generated from facebook
+Edit your [config/parameters.js](config/parameters.js) with the values you've generated from facebook
 
-Start implementing your bot logic at (api/controller/BotController.js)[api/controller/BotController.js]
+Start implementing your bot logic at [api/controller/BotController.js](api/controller/BotController.js)
 
 # Sending messages
 
 First you would like to take a look at [Facebook Send API](https://developers.facebook.com/docs/messenger-platform/send-api-reference).
 
-To respond within the (api/controller/BotController.js)[api/controller/BotController.js] you can use function sendAPI.send(yourResponse, aCallback) where your response is a valid message (see the link above) and aCallback is function to be executed after sending.
+To respond within the [api/controller/BotController.js](api/controller/BotController.js) you can use function sendAPI.send(yourResponse, aCallback) where your response is a valid message (see the link above) and aCallback is function to be executed after sending.
 
-Alternatively, a better practice would be to add methods to the (api/utils/sendAPI.js)[api/utils/sendAPI.js]
+Alternatively, a better practice would be to add methods to the [api/utils/sendAPI.js](api/utils/sendAPI.js)
 
 # Activating the API
 
 First keep on mind that the API does not come with an authentication system so it is open to public (unsecure).
 
-To activate the API on the file (config/blueprint.js)[config/blueprint.js] please change the values of actions, rest and shortcuts to true.
+To activate the API on the file [config/blueprint.js](config/blueprint.js) please change the values of actions, rest and shortcuts to true.
