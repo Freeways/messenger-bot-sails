@@ -21,21 +21,21 @@ module.exports = {
   handleMessage: function (req, res) {
     var data = req.allParams();
     data.entry.forEach(function (entry) {
-      entry.messaging.forEach(function (recievedMessage) {
+      entry.messaging.forEach(function (messaging) {
         //Uncomment to display the famous typing 3 dots to the user until your bot reply
         //sendAPI.typingOn(message.sender.id, function (m) {
         //  return;
         //});
-        getUser(recievedMessage.sender, function (err, user) {
+        getUser(messaging.sender, function (err, user) {
           if (err)
             sails.log.error(err);
-          if (recievedMessage.message) {
+          if (messaging.message) {
             // Comment the create function if you do not want to save messages
             Message.create({
               sender: user,
               entry: entry.id,
-              message: recievedMessage.message.text,
-              attachement: recievedMessage.message.attachement
+              message: messaging.message.text,
+              attachement: messaging.message.attachement
             }).exec(function (err, message) {
               if (err)
                 sails.log.error(err);
@@ -45,7 +45,7 @@ module.exports = {
                * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received 
                */
             });
-          } else if(message.postback) {
+          } else if(messaging.postback) {
             /*
              * Postback Event
              *
@@ -67,26 +67,26 @@ module.exports = {
                * The sent response is on the botResponse Object
                */
             });
-          } else if(message.optin) {
+          } else if(messaging.optin) {
             /*
              * Authorization Event
              *
-             * The value for 'message.optin.ref' is defined in the entry point.
+             * The value for 'messaging.optin.ref' is defined in the entry point.
              * For the "Send to Messenger" plugin, it is the 'data-ref' field. 
              * https://developers.facebook.com/docs/messenger-platform/webhook-reference/authentication
              *
              */
             return;
-          } else if(message.delivery) {
+          } else if(messaging.delivery) {
             /*
              * Delivery Confirmation Event
              *
-             * This event is sent to confirm the delivery of a message.
+             * This event is sent to confirm the delivery of a messaging.
              * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
              *
              */
             return;
-          } else if(message.read) {
+          } else if(messaging.read) {
             /*
              * Message Read Event
              *
@@ -95,7 +95,7 @@ module.exports = {
              * 
              */
             return;
-          } else if(message.account_linking) {
+          } else if(messaging.account_linking) {
             /*
              * Account Link Event
              *
@@ -105,7 +105,7 @@ module.exports = {
              */
             return;
           } else
-            sails.log.error("unknow message type recieved: " + message);
+            sails.log.error("unknow message type recieved: " + messaging);
         });
       });
     });
