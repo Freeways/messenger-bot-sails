@@ -5,7 +5,7 @@
   "description": "boilerplate for facebook messenger bots on sails",
   "keywords": [],
   "dependencies": {
-    "ejs": "2.3.4",
+    "ejs": "2.5.5",
     "grunt": "1.0.1",
     "grunt-cli": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
