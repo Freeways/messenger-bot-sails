@@ -39,7 +39,7 @@ module.exports.routes = {
   },
   'post /webhook': {
     controller: 'BotController',
-    action: 'handleMessage'
+    action: 'webhook'
   },
   'get /authorize': {
     controller: 'BotController',

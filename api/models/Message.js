@@ -18,7 +18,10 @@ module.exports = {
     message: {
       type: "string"
     },
-    attachemend: {
+    attachments: {
+      type: "string"
+    },
+    payload: {
       type: "string"
     }
   }
