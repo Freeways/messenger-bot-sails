@@ -20,7 +20,7 @@ npm install
 
 Create your page and bot on [developers.facebook.com](https://developers.facebook.com/docs/messenger-platform/guides/quick-start)
 
-Edit your [config/parameters.js](config/parameters.js) with the values you've generated from facebook
+Edit your [config/messenger.js](config/messenger.js) with the values you've generated from facebook
 
 Start implementing your bot logic at [api/controllers/BotController.js](api/controllers/BotController.js)
 

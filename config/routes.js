@@ -41,10 +41,6 @@ module.exports.routes = {
     controller: 'BotController',
     action: 'webhook'
   },
-  'get /authorize': {
-    controller: 'BotController',
-    action: 'authorize'
-  },
   'get /policy': {
     view: 'policy'
   },

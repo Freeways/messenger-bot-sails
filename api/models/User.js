@@ -49,7 +49,7 @@ module.exports = {
     var options = {
       hostname: 'graph.facebook.com',
       port: 443,
-      path: '/' + sails.config.parameters.fbApiVersion + '/' + id + '?access_token=' + sails.config.parameters.pageAccessToken,
+      path: '/' + sails.config.messenger.fbApiVersion + '/' + id + '?access_token=' + sails.config.messenger.pageAccessToken,
       method: 'GET'
     };
 

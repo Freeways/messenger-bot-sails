@@ -2,13 +2,13 @@ var https = require('https');
 
 module.exports = {
   send: function (messageData, cb) {
-    messageData.access_token = sails.config.parameters.pageAccessToken;
+    messageData.access_token = sails.config.messenger.pageAccessToken;
     var data = JSON.stringify(messageData);
     var options = {
       hostname: 'graph.facebook.com',
       port: 443,
-      path: '/' + sails.config.parameters.fbApiVersion + '/me/messages',
-      qs: {access_token: sails.config.parameters.pageAccessToken},
+      path: '/' + sails.config.messenger.fbApiVersion + '/me/messages',
+      qs: { access_token: sails.config.messenger.pageAccessToken },
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -66,12 +66,23 @@ module.exports = {
             template_type: "button",
             text: "Hello, and welcome",
             buttons: [{
-                type: "postback",
-                title: "Start",
-                payload: "start"
-              }]
+              type: "postback",
+              title: "Start",
+              payload: "start"
+            }]
           }
         }
+      }
+    };
+    this.send(messageData, done);
+  },
+  text: function (user, text, done) {
+    var messageData = {
+      recipient: {
+        id: user.fbId
+      },
+      message: {
+        text: text
       }
     };
     this.send(messageData, done);
