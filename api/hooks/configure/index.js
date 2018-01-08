@@ -12,7 +12,7 @@ module.exports = function (sails) {
           (process.env.SERVER_URL) : sails.config.parameters.serverURL;
 console.log(sails.config.messenger.appSecret)
       if (!(sails.config.messenger.appSecret && sails.config.messenger.validationToken && sails.config.messenger.pageAccessToken && sails.config.parameters.serverURL)) {
-        sails.log.error("Missing config values");
+        sails.log.error("Messenger Bot : Missing config values! Please set your facebook app credentials before running `sails lift`");
         return process.exit(1);
       }
 
