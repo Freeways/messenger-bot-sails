@@ -19,7 +19,7 @@ module.exports = {
       type: "string"
     },
     attachments: {
-      type: "string"
+      type: "array"
     },
     payload: {
       type: "string"
